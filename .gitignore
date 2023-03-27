@@ -6,3 +6,6 @@ Persistence/obj/
 API/obj/
 Application/bin/
 Domain/bin/
+API/API.csproj.user
+API/appsettings.Development.json
+API/bin/

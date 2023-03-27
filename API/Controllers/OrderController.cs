@@ -1,5 +1,7 @@
-﻿using Application.Queries;
-using Domain.Model;
+﻿using Application.Commands.Create;
+using Application.Commands.Delete;
+using Application.Commands.Update;
+using Application.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,108 +9,90 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]/[Action]")]
     public class OrderController : ControllerBase
     {
+        private readonly IMediator _mediator;
 
         public OrderController(
                 IMediator mediator
-            )
-        {
+            ){
             _mediator = mediator;
         }
 
-        private readonly IMediator _mediator;
-
-
         [HttpGet("{id}")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetReservation(int id)
+        public async Task<IActionResult> GetOrder(int id)
         {
             try
             {
-
-                //var reservation = await _reservationRepository.GetReservation(id);
-                var order = new Order()
-                {
-                    CreateDate = DateTime.Now,
-                    Status = OrderStatus.New,
-                    OrderPrice = 10,
-                    OrderLines = new List<OrderLine>(),
-                    ClientName = "XYZ"
-                };
-
+                var order = await _mediator.Send(new GetOrderQuery(id));
                 return Ok(order);
             }
             catch (ApplicationException ex)
             {
-                return BadRequest(ex.Message); //User nie moze tego wiedziec do zrefactorowania
+                return BadRequest(ex.Message); //User nie moze dokladnei wiedziec co sie dzieje. Do zrefactorowania
             }
         }
-        [HttpGet(Name = "GetReservations")]
+        [HttpGet(Name = "GetOrders")]
         [AllowAnonymous]
-        public IActionResult GetReservations()
+        public async Task<IActionResult> GetOrders()
         {
             try
             {
-                //var reservationList = _reservationRepository.GetReservations();
-                //var orderList = new List<Order>();
+                var orderList = await _mediator.Send(new GetOrdersQuery());
 
-                var orderList = _mediator.Send(new GetOrdersQuery());
-
-                return Ok(orderList);
-                //return Ok(orderList.Result);
+                return Ok(orderList.Result);
             }
             catch (ApplicationException ex)
             {
-                return BadRequest(ex.Message); //User nie moze tego wiedziec do zrefactorowania
+                return BadRequest(ex.Message); //User nie moze dokladnei wiedziec co sie dzieje. Do zrefactorowania
             }
         }
 
 
-        //[HttpPost("Create")]
-        //public IActionResult CreateOrder([FromBody] Order order)
-        //{
-        //    // TODO Reservation musi pobierac customerId z zalogowanego usera.
-        //    try
-        //    {
-        //        _reservationRepository.InsertReservation(reservation);
-        //        return Ok();
-        //    }
-        //    catch (ApplicationException ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
+        [HttpPost("Create")]
+        public async Task<IActionResult> CreateOrder([FromBody] CreateOrderCommand order)
+        {
+            try
+            {
+                var commandResult = await _mediator.Send(order);
+                return Created("", commandResult);
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-        //[HttpPut]
-        //public async Task<IActionResult> Update([FromBody] Reservation reservation)
-        //{
-        //    try
-        //    {
-        //        await _reservationRepository.UpdateReservation(reservation);
-        //        return Ok();
-        //    }
-        //    catch (ApplicationException ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
+        [HttpPut]
+        public async Task<IActionResult> UpdateOrder(long id, [FromBody] UpdateOrderCommand command)
+        {
+            try
+            {
+                command.SetOrderId(id);
+                await _mediator.Send(command);
+                return Ok();
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-
-
-        //[HttpDelete("{id}")]
-        //public IActionResult DeleteReservation(int id)
-        //{
-        //    try
-        //    {
-        //        _reservationRepository.DeleteReservation(id);
-        //        return Ok();
-        //    }
-        //    catch (ApplicationException ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteOrder(long id)
+        {
+            try
+            {
+                var command = new DeleteOrderCommand(id);
+                await _mediator.Send(command);
+                return Ok();
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

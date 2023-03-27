@@ -1,11 +1,19 @@
-﻿namespace Domain.Model
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Domain.Model
 {
     public class OrderLine
     {
-        public int OrderLineId { get; set; }
-        public long OrderId { get; set; }
+        [Key]
+        public int Id { get; set; }
+
         public string Product { get; set; }
         public decimal Price { get; set; }
+
+        [ForeignKey("OrderId")]
         public Order Order { get; set; }
+
+        public long OrderId { get; set; }
     }
 }

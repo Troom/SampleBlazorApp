@@ -1,29 +1,28 @@
-﻿using Azure;
+﻿using Application.AppModel;
+using Application.Mappers;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application.Queries
 {
-    internal class GetOrdersQueryHandler : IRequestHandler<GetOrdersQuery, Response>
+    public class GetOrdersQueryHandler : BaseOrderHandler, IRequestHandler<GetOrdersQuery, Response>
     {
-        private readonly OrderContext _context;
-
-        public GetOrdersQueryHandler(OrderContext orderContext)
+        public GetOrdersQueryHandler(OrderContext context) : base(context)
         {
-            _context = orderContext;
         }
-
 
         public async Task<Response> Handle(GetOrdersQuery query, CancellationToken cancellationToken)
         {
             var orders = _context.Order.Include(x => x.OrderLines).AsQueryable();
-
             var orderList = await orders.ToListAsync();
+            var result = new List<OrderDto>();
 
-            return new Response(orderList);
+            foreach (var item in orderList)
+            {
+                result.Add(OrderDtoMapper.MapToOrderDto(item));
+            }
+            return new Response(result);
         }
-
-
     }
 }

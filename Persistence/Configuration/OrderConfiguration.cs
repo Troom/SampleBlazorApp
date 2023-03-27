@@ -10,10 +10,10 @@ namespace Persistence.Configuration
         {
             var naviagtion = builder.Metadata.FindNavigation(nameof(Order.OrderLines));
             naviagtion.SetPropertyAccessMode(PropertyAccessMode.Field);
-            builder.HasKey(c => c.OrderId);
+            builder.HasKey(c => c.Id);
             builder.HasMany(c => c.OrderLines)
                 .WithOne(e => e.Order)
-                .HasForeignKey(d => d.OrderLineId);
+                .HasForeignKey(d => d.Id);
         }
 
 

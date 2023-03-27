@@ -40,7 +40,7 @@ namespace Persistence
         {
             await context.Order.AddAsync(order);
             await context.SaveChangesAsync();
-            return order.OrderId;
+            return order.Id;
         }
 
         public void DeleteOrder(long orderId)

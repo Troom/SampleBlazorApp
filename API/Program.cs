@@ -1,64 +1,53 @@
-
+using Application.Commands.Create;
+using Application.Commands.Update;
 using Application.Queries;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Persistence;
+using FluentValidation;
 using FluentValidation.AspNetCore;
-using MediatR;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
-
+using Newtonsoft.Json.Serialization;
+using Persistence;
 
 namespace API
 {
     public class Program
     {
+
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            builder.Services.AddControllers()
+                    .AddNewtonsoftJson(options =>
+                    {
+                        options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                    });
 
-            builder.Services.AddControllers().AddFluentValidation(opt => {
-                opt.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-            });
-
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             ConfigureServices(builder);
 
-            builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
-
-
             var app = builder.Build();
 
-            //using (var scope = app.Services.CreateScope())
-            //{
-            //    try
-            //    {
-            //        var context = scope.ServiceProvider.GetService<OrderContext>();
+            using (var scope = app.Services.CreateScope())
+            {
+                try
+                {
+                    var context = scope.ServiceProvider.GetService<OrderContext>();
 
-            //        if (context.Database.IsRelational())
-            //        {
-            //            context.Database.EnsureDeleted();
-            //            context.Database.Migrate();
-            //            //DbInitializer.Initialize(context);
-            //        }
-            //    }
-            //    catch (Exception)
-            //    {
-            //        throw;
-            //    }
-            //}
+                    //if (context.Database.IsRelational())
+                    //{
+                    //    context.Database.EnsureDeleted();
+                    //    context.Database.Migrate();
+                    //    //DbInitializer.Initialize(context);
+                    //}
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
 
-
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -68,7 +57,6 @@ namespace API
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
@@ -81,9 +69,14 @@ namespace API
                 x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")
             ));
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+            builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetOrdersQueryHandler>());
 
 
+            //FluentValidationConfig
+            builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
+            builder.Services.AddScoped<IValidator<UpdateOrderCommand>, UpdateOrderCommandValidator>();
+            builder.Services.AddScoped<IValidator<CreateOrderCommand>, CreateOrderCommandValidator>();
+            //
         }
-
     }
 }

@@ -9,7 +9,7 @@ Currently I don't have any idea.
 # To use this project you should
 Install Visual Studio 2022  
 Install SQL server and fill your connection string to appsetting json.  
-Make some magic
+Make some magic  
 Type `update-database` inside nuget console  
 Run the project  
 
