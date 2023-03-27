@@ -9,3 +9,8 @@ Domain/bin/
 API/API.csproj.user
 API/appsettings.Development.json
 API/bin/
+ClientApp/bin/
+ClientApp/obj/
+Shared/obj/
+Shared/bin/
+ClientApp/wwwroot/

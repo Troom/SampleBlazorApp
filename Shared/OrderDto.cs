@@ -1,6 +1,6 @@
 ﻿using Domain.Model;
 
-namespace Application.AppModel
+namespace Shared
 {
     public class OrderDto
     {

@@ -1,6 +1,7 @@
 ﻿using Application.AppModel;
 using Domain.Model;
 using MediatR;
+using Shared;
 
 namespace Application.Commands.Update
 {

@@ -21,3 +21,12 @@ Run the project
 * Make tests for app.  
 * Save users inside databse.  
 * Some awesome features.  
+
+
+# Enpoints  
+
+/Order/GetOrder/{id}  
+/Order/GetOrders  
+/Order/CreateOrder/Create
+/Order/UpdateOrder  
+/Order/DeleteOrder/{id}  

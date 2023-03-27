@@ -1,6 +1,4 @@
 ﻿using Application.AppModel;
-using Application.Commands.Update;
-using Domain.Model;
 using FluentValidation;
 using FluentValidation.Results;
 
