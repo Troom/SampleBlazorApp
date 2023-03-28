@@ -1,0 +1,68 @@
+﻿@page "/orderedit"
+@page "/orderedit/{OrderId}"
+@using Domain.Model;
+@if (!Saved)
+{
+    
+<section class="order-edit">
+    <h1 class="page-title"> Details for @OrderDto.ClientName</h1>
+    
+    <EditForm Model="@OrderDto" OnValidSubmit="@HandleValidSubmit" OnInvalidSubmit="@HandleInvalidSubmit">
+
+        <div class="row mb-3">
+            <label for="lastName" class="col-form-label col-md-3">ClientName: </label>
+            <div class="col-md-8">
+                <InputText id="clientName" @bind-Value=@OrderDto.ClientName class="form-control col-md-8" placeholer="Enter ClientName"></InputText>
+            </div>
+        </div>
+
+        
+        <div class="row mb-3">
+            <label for="lastName" class="col-form-label col-md-3">CreationDate: </label>
+            <div class="col-md-8">
+                <InputDate id="creationDate" @bind-Value=@OrderDto.CreateDate class="form-control col-md-8" placeholer="Enter creaionDate" />
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="orderPrice" class="col-form-label col-md-3">OrderPrice: </label>
+            <div class="col-md-8">
+                <InputNumber id="orderPrice" @bind-Value=@OrderDto.OrderPrice class="form-control col-md-8" placeholer="Enter OrderPrice" />
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="status" class="col-form-label col-md-3">Status: </label>
+            <div class="col-md-8">
+                <InputSelect id="status" @bind-Value=@OrderDto.Status class="form-control col-md-8" placeholer="Enter status">
+                @foreach (var orderStatus in Enum.GetValues(typeof(OrderStatus)))
+                    {
+                        <option value="@orderStatus">@orderStatus</option>
+                    }   
+                </InputSelect>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="Info" class="col-form-label col-md-3">Info: </label>
+            <div class="col-md-8">
+                <InputText id="info" @bind-Value=@OrderDto.AdditionalInfo class="form-control col-md-8" placeholer="Enter Info" />
+            </div>
+        </div>
+
+        @if (OrderDto.OrderId >0)
+        {
+            <button type="button" class="btn-outline-primary" @onclick="@DeleteOrder">Delete</button>
+        }
+
+        <button type="button" class="btn btn-outline-primary ms-1" @onclick="@NavigateToOverview"> Back to overview</button>
+        <button type="submit" class="btn btn-primary me-1">Save Order</button>
+
+    </EditForm>
+</section>
+}
+else
+{
+    <div>@Message</div>
+    <button type="button" class="btn btn-outline-primary ms-1" @onclick="@NavigateToOverview"> Back to overview</button>
+}

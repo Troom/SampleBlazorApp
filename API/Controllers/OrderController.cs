@@ -5,6 +5,7 @@ using Application.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shared;
 
 namespace API.Controllers
 {
@@ -27,7 +28,7 @@ namespace API.Controllers
             try
             {
                 var order = await _mediator.Send(new GetOrderQuery(id));
-                return Ok(order);
+                return Ok(order.Result);
             }
             catch (ApplicationException ex)
             {
@@ -66,11 +67,19 @@ namespace API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateOrder(long id, [FromBody] UpdateOrderCommand command)
+        public async Task<IActionResult> UpdateOrder(/*long id,*/ [FromBody] OrderDto orderDto)
         {
             try
             {
-                command.SetOrderId(id);
+                //command.SetOrderId(id);
+                var command = new UpdateOrderCommand() { ClientName = orderDto.ClientName,
+                                                         CreateDate = orderDto.CreateDate,
+                                                         AdditionalInfo = orderDto.AdditionalInfo,
+                                                         OrderPrice = orderDto.OrderPrice,
+                                                         Status = orderDto.Status,
+                                                         Id = orderDto.OrderId,
+                                                         OrderLines = orderDto.OrderLines
+                                                            };
                 await _mediator.Send(command);
                 return Ok();
             }

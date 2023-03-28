@@ -20,10 +20,12 @@ namespace Application.Mappers
             }
             var result = new OrderDto()
             {
+                OrderId = order.Id,
                 ClientName = order.ClientName,
                 Status = order.Status,
                 CreateDate = order.CreateDate,
                 AdditionalInfo = order.AdditionalInfo,
+                OrderPrice = order.OrderPrice,
                 OrderLines = orderLineList
             };
             return result;

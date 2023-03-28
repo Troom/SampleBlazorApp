@@ -1,7 +1,11 @@
 ﻿using Blazored.LocalStorage;
 using ClientApp.Helper;
+using Domain.Model;
 using Shared;
+using System.Net.WebSockets;
+using System.Text;
 using System.Text.Json;
+using static System.Net.WebRequestMethods;
 
 namespace ClientApp.Services
 {
@@ -17,14 +21,37 @@ namespace ClientApp.Services
             _localStorageService = localStorageService;
         }
 
-        public Task<OrderDto> AddOrder(OrderDto employee)
+        public async Task<OrderDto> AddOrder(OrderDto order)
         {
-            throw new NotImplementedException();
+
+            var orderJson = new StringContent(JsonSerializer.Serialize(order),
+                Encoding.UTF8,"application/json");
+
+            var response = await _httpClient.PostAsync("/order/createorder/create", orderJson);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await JsonSerializer.DeserializeAsync<OrderDto>(await
+                    response.Content.ReadAsStreamAsync());
+            }
+
+            return null;
         }
 
-        public Task DeleteOrder(int employeeId)
+        public async Task UpdateOrder(OrderDto order)
         {
-            throw new NotImplementedException();
+            var orderJson = new StringContent(JsonSerializer.Serialize(order),
+                Encoding.UTF8, "application/json");
+
+           var x = await _httpClient.PutAsync("/order/updateorder", orderJson);
+
+            await Console.Out.WriteLineAsync();
+            await Console.Out.WriteLineAsync();
+        }
+
+        public async Task DeleteOrder(int orderId)
+        {
+            await _httpClient.DeleteAsync($"order/deleteorder/{orderId}");
         }
 
         public async Task<IEnumerable<OrderDto>> GetAllOrders(bool refreshRequired = false)
@@ -60,17 +87,13 @@ namespace ClientApp.Services
             return list;
 
         }
-
-        public async Task<OrderDto> GetOrderDetails(int employeeId)
+        public async Task<OrderDto> GetOrderDetails(int orderId)
         {
             return await JsonSerializer.DeserializeAsync<OrderDto>
-                (await _httpClient.GetStreamAsync($"/api/orders/{employeeId}"),
+                (await _httpClient.GetStreamAsync($"/order/getorder/{orderId}"),
                 new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
         }
 
-        public Task UpdateOrder(OrderDto employee)
-        {
-            throw new NotImplementedException();
-        }
+ 
     }
 }
