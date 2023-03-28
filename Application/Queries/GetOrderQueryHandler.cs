@@ -4,6 +4,7 @@ using Domain.Model;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using Shared;
 
 namespace Application.Queries
 {

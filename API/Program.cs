@@ -21,6 +21,13 @@ namespace API
                     {
                         options.SerializerSettings.ContractResolver = new DefaultContractResolver();
                     });
+            builder.Services.AddCors(option => {
+                option.AddPolicy("Unsafe", builder => builder
+                                                .AllowAnyOrigin()
+                                                .AllowAnyHeader()
+                                                .AllowAnyMethod());
+                                            });
+
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -52,14 +59,18 @@ namespace API
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+                app.UseWebAssemblyDebugging();
             }
 
             app.UseHttpsRedirection();
-
+            app.UseBlazorFrameworkFiles();
+            app.UseStaticFiles();
             app.UseAuthorization();
+            app.UseCors("Unsafe");
 
             app.MapControllers();
 
+            app.MapFallbackToFile("index.html");
             app.Run();
         }
 

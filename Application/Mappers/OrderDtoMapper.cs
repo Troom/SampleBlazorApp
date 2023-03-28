@@ -1,5 +1,6 @@
 ﻿using Application.AppModel;
 using Domain.Model;
+using Shared;
 
 namespace Application.Mappers
 {

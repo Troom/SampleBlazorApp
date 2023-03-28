@@ -3,6 +3,7 @@ using Application.Mappers;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using Shared;
 
 namespace Application.Queries
 {

@@ -1,0 +1,15 @@
+﻿<div class="col">
+    <div class="card rounded-3 employee-card">
+        <div class="card-header py-3">
+            <h4>@Order.ClientName @Order.Status</h4>
+        </div>
+        <div class="card-body employee-card text-center">
+
+            <button class="btn btn-primary btn-sm mb-1" @onclick="@(async () => await OrderViewClicked.InvokeAsync(Order))"> Quick view</button>
+            <a href="@($"orderdetail/{Order.OrderPrice}")" class="btn btn-outline-primary btn-sm mb-1">
+                Full details
+            </a>
+        </div>
+    </div>
+</div>
+

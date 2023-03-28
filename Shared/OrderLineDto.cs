@@ -1,4 +1,4 @@
-﻿namespace Application.AppModel
+﻿namespace Shared
 {
     public class OrderLineDto
     {
