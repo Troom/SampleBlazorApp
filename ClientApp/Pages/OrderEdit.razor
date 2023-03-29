@@ -6,7 +6,7 @@
     <style>
         table, th, td {
         border: 1px solid black;
-        width:
+        width: 10
         }
     </style>
 
@@ -74,20 +74,28 @@
                             <th>Product</th>
                             <th>Price</th>
                             </tr>
+
+
                             @foreach (var orderLine in OrderDto.OrderLines)
                             {
                             <tr>
-                                <td>@orderLine.Product</td>
-                                <td>@orderLine.Price</td>
+                              <td>@orderLine.Product</td>
+                              <td>@orderLine.Price</td>
                             </tr>
                             }
-                        </table>
-                    
+                            
 
-                     @if (OrderDto.Status == 0)
+
+                        </table>
+
+                    <br />
+                    <br />
+                    <br />
+                     @if (OrderDto.Status == OrderStatus.None || OrderDto.Status == OrderStatus.New)
                     {
-                    <InputText id="info" @bind-Value=@currentProduct placeholer="Enter ProductName" />
-                    <InputNumber id="info" @bind-Value=@currentPrice placeholer="Enter ProductPrice" />
+                        <InputText id="info" @bind-Value=@currentProduct class="form-control" placeholer="Enter ProductName" />
+                        <InputNumber id="info" @bind-Value=@currentPrice class="form-control" placeholer="Enter ProductPrice" />
+                    <br />
                     <button type="button" class="btn btn-outline-primary ms-1" @onclick="@AddOrderLine"> AddOrderLine</button>
                     }
 

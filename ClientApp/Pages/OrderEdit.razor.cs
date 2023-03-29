@@ -1,7 +1,6 @@
 ﻿using ClientApp.Services;
 using Domain.Model;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
 using Shared;
 
 namespace ClientApp.Pages
@@ -13,10 +12,9 @@ namespace ClientApp.Pages
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
-
         [Parameter]
         public string? OrderId { get; set; }
-        public OrderDto OrderDto { get; set; } = new OrderDto();
+        public OrderDto OrderDto { get; set; } = new OrderDto() { OrderLines = new List<OrderLineDto>() };
 
         protected bool Saved;
         protected string Message = string.Empty;
@@ -24,8 +22,7 @@ namespace ClientApp.Pages
         public string? currentProduct { get; set; }
         public decimal currentPrice { get; set; }
 
-
-        public List<OrderLineDto> orderLines { get; set; } = new List<OrderLineDto  >(){ new OrderLineDto() { Price=1, Product ="SampleProduct"} };
+        public List<OrderLineDto> orderLines { get; set; } = new List<OrderLineDto>() { new OrderLineDto() { Price = 1, Product = "SampleProduct" } };
 
         protected async override Task OnInitializedAsync()
         {
@@ -42,8 +39,8 @@ namespace ClientApp.Pages
             }
         }
 
-        protected async Task HandleValidSubmit() {
-
+        protected async Task HandleValidSubmit()
+        {
             Saved = false;
             OrderDto.OrderPrice = OrderDto.OrderLines.Sum(x => x.Price);
 
@@ -58,7 +55,6 @@ namespace ClientApp.Pages
                 {
                     Saved = false;
                 }
-
             }
             else
             {
@@ -67,7 +63,6 @@ namespace ClientApp.Pages
                 Saved = true;
             }
         }
-
 
         protected async Task DeleteOrder()
         {
@@ -81,11 +76,10 @@ namespace ClientApp.Pages
         protected async Task HandleInvalidSubmit()
         {
             Message = "Something was wrong. Check data and try again";
-
         }
 
-        protected void NavigateToOverview() {
-
+        protected void NavigateToOverview()
+        {
             NavigationManager.NavigateTo("/ordersoverview");
         }
 

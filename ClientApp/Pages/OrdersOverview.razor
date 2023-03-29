@@ -1,4 +1,5 @@
 ﻿@page "/ordersoverview"
+@using Domain.Model;
 
 <h1 class="page-title">All orders</h1>
 
@@ -9,7 +10,57 @@
 else
 {
     <ClientApp.Components.ViewPopup Order="_selectedOrder"/>
-    
+    <div>Aktualnie zastosowane filtrowanie:
+        @if (Filter.DateFrom !=null)
+        {
+            <div>DataOd</div>
+        }
+        @if (Filter.DateTo != null)
+        {
+            <div>DataDo</div>
+        }
+        @if (Filter.Statuses.Any())
+        {
+            foreach (var item in Filter.Statuses)
+            {
+                <div>@item</div>
+            }
+        }
+    </div>
+
+
+    <div>
+        Data Od
+    <InputDate id="info" @bind-Value=@Filter.DateFrom placeholer="Enter ProductName" />
+    </div>
+
+    <div>
+        Data Do
+        <InputDate id="info" @bind-Value=@Filter.DateTo placeholer="Enter ProductName" />
+    </div>
+
+
+        <label for="status" class="col-form-label col-md-3">Status: </label>
+        <div class="col-md-8">
+        <InputSelect id="statuss" @bind-Value=@currentStatus class="form-control col-md-8" placeholer="Enter status">
+            @foreach (var currentStatus in Enum.GetValues(typeof(OrderStatus)))
+                {
+                <option value="@currentStatus">@currentStatus</option>
+                }
+            </InputSelect>
+        </div>
+    <div>
+        <button type="button" class="btn btn-outline-primary ms-1" @onclick="@UpdateFilter"> Filtruj</button>
+        <button type="button" class="btn btn-outline-primary ms-1" @onclick="@ResetFilter"> ResetujFiltr</button>
+
+
+
+    </div>
+
+    <br/>
+    <br />
+    <br />
+
     @NumberOfOrders 
     <br/>
     @PageNumber
