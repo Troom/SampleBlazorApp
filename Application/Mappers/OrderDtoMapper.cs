@@ -25,7 +25,7 @@ namespace Application.Mappers
                 Status = order.Status,
                 CreateDate = order.CreateDate,
                 AdditionalInfo = order.AdditionalInfo,
-                OrderPrice = order.OrderPrice,
+                OrderPrice = order.OrderLines.Sum(x=>x.Price),
                 OrderLines = orderLineList
             };
             return result;

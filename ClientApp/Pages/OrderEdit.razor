@@ -3,10 +3,25 @@
 @using Domain.Model;
 @if (!Saved)
 {
-    
-<section class="order-edit">
-    <h1 class="page-title"> Details for @OrderDto.ClientName</h1>
-    
+    <style>
+        table, th, td {
+        border: 1px solid black;
+        width:
+        }
+    </style>
+
+
+    <section class="order-edit">
+
+        @if (@OrderDto.OrderId != 0)
+        {
+            <h1 class="page-title">Details for @OrderDto.ClientName</h1>
+        }
+        else
+        {
+            <h1 class="page-title">Creating new order</h1>
+        }
+
     <EditForm Model="@OrderDto" OnValidSubmit="@HandleValidSubmit" OnInvalidSubmit="@HandleInvalidSubmit">
 
         <div class="row mb-3">
@@ -27,7 +42,8 @@
         <div class="row mb-3">
             <label for="orderPrice" class="col-form-label col-md-3">OrderPrice: </label>
             <div class="col-md-8">
-                <InputNumber id="orderPrice" @bind-Value=@OrderDto.OrderPrice class="form-control col-md-8" placeholer="Enter OrderPrice" />
+                    @OrderDto.OrderPrice
+                @*<InputNumber id="orderPrice" @bind-Value=@OrderDto.OrderPrice class="form-control col-md-8" placeholer="Enter OrderPrice" />*@
             </div>
         </div>
 
@@ -49,6 +65,35 @@
                 <InputText id="info" @bind-Value=@OrderDto.AdditionalInfo class="form-control col-md-8" placeholer="Enter Info" />
             </div>
         </div>
+
+            <div class="row mb-3">
+                <label for="Info" class="col-form-label col-md-3">OrderLine: </label>
+                <div class="col-md-8">
+                    <table class="col-md-8" width="100">
+                            <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            </tr>
+                            @foreach (var orderLine in OrderDto.OrderLines)
+                            {
+                            <tr>
+                                <td>@orderLine.Product</td>
+                                <td>@orderLine.Price</td>
+                            </tr>
+                            }
+                        </table>
+                    
+
+                     @if (OrderDto.Status == 0)
+                    {
+                    <InputText id="info" @bind-Value=@currentProduct placeholer="Enter ProductName" />
+                    <InputNumber id="info" @bind-Value=@currentPrice placeholer="Enter ProductPrice" />
+                    <button type="button" class="btn btn-outline-primary ms-1" @onclick="@AddOrderLine"> AddOrderLine</button>
+                    }
+
+                </div>
+
+            </div>
 
         @if (OrderDto.OrderId >0)
         {

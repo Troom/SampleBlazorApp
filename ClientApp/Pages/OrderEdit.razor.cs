@@ -21,14 +21,20 @@ namespace ClientApp.Pages
         protected bool Saved;
         protected string Message = string.Empty;
 
+        public string? currentProduct { get; set; }
+        public decimal currentPrice { get; set; }
+
+
+        public List<OrderLineDto> orderLines { get; set; } = new List<OrderLineDto  >(){ new OrderLineDto() { Price=1, Product ="SampleProduct"} };
+
         protected async override Task OnInitializedAsync()
         {
             Saved = false;
             int.TryParse(OrderId, out int orderId);
-            if (orderId == 0) //new employee is being created
+            if (orderId == 0) //new order is being created
             {
                 //add some defaults
-                OrderDto = new OrderDto { ClientName = "BrakId", OrderPrice = 1, CreateDate = DateTime.Now, Status = OrderStatus.New };
+                OrderDto = new OrderDto { ClientName = "SampleClientName", OrderPrice = 1, CreateDate = DateTime.Now, Status = OrderStatus.New, OrderLines = new List<OrderLineDto>() };
             }
             else
             {
@@ -39,6 +45,8 @@ namespace ClientApp.Pages
         protected async Task HandleValidSubmit() {
 
             Saved = false;
+            OrderDto.OrderPrice = OrderDto.OrderLines.Sum(x => x.Price);
+
             if (OrderDto.OrderId == 0)
             {
                 var addedOrder = await OrderDataService.AddOrder(OrderDto);
@@ -58,10 +66,6 @@ namespace ClientApp.Pages
                 Message = "Order updated successfully";
                 Saved = true;
             }
-
-            //var addedOrder = await OrderDataService.AddOrder(OrderDto);
-
-
         }
 
 
@@ -85,11 +89,10 @@ namespace ClientApp.Pages
             NavigationManager.NavigateTo("/ordersoverview");
         }
 
-        //private void OnInputFileChange(InputFileChangeEventArgs e)
-        //{
-        //    selectedFile = e.File;
-        //    StateHasChanged();
-        //}
-
+        protected void AddOrderLine()
+        {
+            OrderDto.OrderLines.Add(new OrderLineDto() { Product = currentProduct, Price = currentPrice });
+            OrderDto.OrderPrice = OrderDto.OrderLines.Sum(x => x.Price);
+        }
     }
 }

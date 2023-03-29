@@ -3,7 +3,7 @@
         <div class="card-header py-3">
             <h4>@Order.ClientName @Order.Status</h4>
         </div>
-        <div class="card-body employee-card text-center">
+        <div class="card-body order-card text-center">
 
             <button class="btn btn-primary btn-sm mb-1" @onclick="@(async () => await OrderViewClicked.InvokeAsync(Order))"> Quick view</button>
             <a href="@($"orderdetail/{Order.OrderId}")" class="btn btn-outline-primary btn-sm mb-1">
