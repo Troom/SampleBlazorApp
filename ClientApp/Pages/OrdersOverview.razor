@@ -9,6 +9,14 @@
 else
 {
     <ClientApp.Components.ViewPopup Order="_selectedOrder"/>
+    
+    @NumberOfOrders 
+    <br/>
+    @PageNumber
+
+    <button type="button" class="btn btn-outline-primary ms-1" @onclick="@PreviousPage"> PreviousPage</button>
+    <button type="button" class="btn btn-outline-primary ms-1" @onclick="@NextPage"> NextPage</button>
+
 
     <div class="row">
         @foreach (var order in Orders)
@@ -17,5 +25,8 @@ else
                 <ClientApp.Components.OrderCard Order="order" OrderViewClicked="ShowViewPopup"/>
             </div>
         }
+
+
+
     </div>
 }
