@@ -4,6 +4,7 @@ namespace Shared
 {
     public class OrderDto
     {
+        public bool ShowDetails { get; set; } = false;
         public long OrderId { get; set; }
         public DateTime CreateDate { get; set; }
         public OrderStatus Status { get; set; }

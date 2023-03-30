@@ -83,14 +83,12 @@
                               <td>@orderLine.Price</td>
                             </tr>
                             }
-                            
-
-
                         </table>
 
                     <br />
                     <br />
                     <br />
+
                      @if (OrderDto.Status == OrderStatus.None || OrderDto.Status == OrderStatus.New)
                     {
                         <InputText id="info" @bind-Value=@currentProduct class="form-control" placeholer="Enter ProductName" />
