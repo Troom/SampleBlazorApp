@@ -14,3 +14,6 @@ ClientApp/obj/
 Shared/obj/
 Shared/bin/
 ClientApp/wwwroot/
+Tests/bin/
+Tests/obj/
+obj/

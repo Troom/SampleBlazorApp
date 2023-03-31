@@ -42,12 +42,12 @@ namespace API
                 {
                     var context = scope.ServiceProvider.GetService<OrderContext>();
 
-                    //if (context.Database.IsRelational())
-                    //{
-                    //    context.Database.EnsureDeleted();
-                    //    context.Database.Migrate();
-                    //    //DbInitializer.Initialize(context);
-                    //}
+                    if (context.Database.IsRelational())
+                    {
+                        context.Database.EnsureDeleted();
+                        context.Database.Migrate();
+                        //DbInitializer.Initialize(context);
+                    }
                 }
                 catch (Exception)
                 {

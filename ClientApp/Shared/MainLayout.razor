@@ -8,14 +8,10 @@
     <div class="sidebar">
         <NavMenu />
     </div>
-
     <main>
-        <div class="top-100">
-            Ilosc nowych zamowien
-            @AppState.NewOrders
-        </div>
         <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            <MudAlert Severity="Severity.Info" Class="justify-start" Variant="Variant.Outlined">Ilosc nowych zamówień @AppState.NewOrders</MudAlert>
+            <a href="https://preview.redd.it/y1dq3a2v99841.jpg?width=960&crop=smart&auto=webp&v=enabled&s=57c7e3d66c14c37bc1193118fc1ad6dacdd1822a" target="_blank">About</a>
         </div>
         <article class="content px-4">
             @Body

@@ -1,18 +1,13 @@
 ﻿@page "/orderedit"
 @page "/orderedit/{OrderId}"
 @using Domain.Model;
+@using System.ComponentModel.DataAnnotations
+
+
+
 @if (!Saved)
 {
-    <style>
-        table, th, td {
-        border: 1px solid black;
-        width: 10
-        }
-    </style>
-
-
     <section class="order-edit">
-
         @if (@OrderDto.OrderId != 0)
         {
             <h1 class="page-title">Details for @OrderDto.ClientName</h1>
@@ -21,99 +16,78 @@
         {
             <h1 class="page-title">Creating new order</h1>
         }
+    </section>
+<EditForm Model="@Model" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudCard>
+                <MudCardContent>
+                        <MudDatePicker Label="CreateDate" @bind-Date="Model.CreateDate" DisableToolbar="true" />
+                    <MudSelect @bind-Value="Model.Status" Label="Select Status" AdornmentColor="Color.Secondary">
+                            @foreach (var item in Enum.GetValues(typeof(OrderStatus)).Cast<OrderStatus>().Where(x=>x > 0))
+                        {
+                            <MudSelectItem Value="@item">@item</MudSelectItem>
+                        }
+                    </MudSelect>
+                    <MudTextField Label="ClientName" Class="mt-3" @bind-Value="Model.ClientName" For="@(() => Model.ClientName)" />
+                    <MudNumericField @bind-Value="Model.OrderPrice" Disabled="true" Label="OrderPrice" Variant="Variant.Text" Min="0" Max="10" />
+                    <MudTextField Label="AdditionalInfo" Class="mt-3"
+                                  @bind-Value="Model.AdditionalInfo" For="@(() => Model.AdditionalInfo)" InputType="InputType.Text" />
+                </MudCardContent>
 
-    <EditForm Model="@OrderDto" OnValidSubmit="@HandleValidSubmit" OnInvalidSubmit="@HandleInvalidSubmit">
+            <MudTable Items="@OrderDto.OrderLines" Hover="true" Context="orderLinesContext" Dense="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info">
+                <HeaderContent>
+                    <MudTh>Products</MudTh>
+                    <MudTh>Price</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                        <MudTd DataLabel="Product">@orderLinesContext.Product</MudTd>
+                        <MudTd DataLabel="Price">@orderLinesContext.Price</MudTd>
+                </RowTemplate>
+            </MudTable>
+                @if (OrderDto.Status == OrderStatus.None || OrderDto.Status == OrderStatus.New)
+                {
+                    <MudText Typo="Typo.h4" Align="Align.Left" Class="mt-15"> Add new product for this order.</MudText>
 
-        <div class="row mb-3">
-            <label for="lastName" class="col-form-label col-md-3">ClientName: </label>
-            <div class="col-md-8">
-                <InputText id="clientName" @bind-Value=@OrderDto.ClientName class="form-control col-md-8" placeholer="Enter ClientName"></InputText>
-            </div>
-        </div>
-
-        
-        <div class="row mb-3">
-            <label for="lastName" class="col-form-label col-md-3">CreationDate: </label>
-            <div class="col-md-8">
-                <InputDate id="creationDate" @bind-Value=@OrderDto.CreateDate class="form-control col-md-8" placeholer="Enter creaionDate" />
-            </div>
-        </div>
-
-        <div class="row mb-3">
-            <label for="orderPrice" class="col-form-label col-md-3">OrderPrice: </label>
-            <div class="col-md-8">
-                    @OrderDto.OrderPrice
-                @*<InputNumber id="orderPrice" @bind-Value=@OrderDto.OrderPrice class="form-control col-md-8" placeholer="Enter OrderPrice" />*@
-            </div>
-        </div>
-
-        <div class="row mb-3">
-            <label for="status" class="col-form-label col-md-3">Status: </label>
-            <div class="col-md-8">
-                <InputSelect id="status" @bind-Value=@OrderDto.Status class="form-control col-md-8" placeholer="Enter status">
-                @foreach (var orderStatus in Enum.GetValues(typeof(OrderStatus)))
-                    {
-                        <option value="@orderStatus">@orderStatus</option>
-                    }   
-                </InputSelect>
-            </div>
-        </div>
-
-        <div class="row mb-3">
-            <label for="Info" class="col-form-label col-md-3">Info: </label>
-            <div class="col-md-8">
-                <InputText id="info" @bind-Value=@OrderDto.AdditionalInfo class="form-control col-md-8" placeholer="Enter Info" />
-            </div>
-        </div>
-
-            <div class="row mb-3">
-                <label for="Info" class="col-form-label col-md-3">OrderLine: </label>
-                <div class="col-md-8">
-                    <table class="col-md-8" width="100">
-                            <tr>
-                            <th>Product</th>
-                            <th>Price</th>
-                            </tr>
-
-
-                            @foreach (var orderLine in OrderDto.OrderLines)
-                            {
-                            <tr>
-                              <td>@orderLine.Product</td>
-                              <td>@orderLine.Price</td>
-                            </tr>
-                            }
-                        </table>
-
-                    <br />
-                    <br />
+                    <MudTextField Label="Product" Class="mt-3" @bind-Value="CurrentProduct" Placeholder="Enter Product Name" For="@(() => CurrentProduct)" />
+                    <MudNumericField @bind-Value="CurrentPrice" Label="OrderPrice" Placeholder="Enter Product Price" Variant="Variant.Text" Min="0" />
                     <br />
 
-                     @if (OrderDto.Status == OrderStatus.None || OrderDto.Status == OrderStatus.New)
-                    {
-                        <InputText id="info" @bind-Value=@currentProduct class="form-control" placeholer="Enter ProductName" />
-                        <InputNumber id="info" @bind-Value=@currentPrice class="form-control" placeholer="Enter ProductPrice" />
-                    <br />
-                    <button type="button" class="btn btn-outline-primary ms-1" @onclick="@AddOrderLine"> AddOrderLine</button>
-                    }
-
-                </div>
-
-            </div>
-
-        @if (OrderDto.OrderId >0)
-        {
-            <button type="button" class="btn-outline-primary" @onclick="@DeleteOrder">Delete</button>
-        }
-
-        <button type="button" class="btn btn-outline-primary ms-1" @onclick="@NavigateToOverview"> Back to overview</button>
-        <button type="submit" class="btn btn-primary me-1">Save Order</button>
-
-    </EditForm>
-</section>
+                    <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="@RemoveProductsFromForm">Remove All Products</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="@AddOrderLine">Add New Order Line</MudButton>
+                }
+                    <MudCardActions Class="mt-10 pr-5 pb-5 justify-end">
+                        <MudButton ButtonType="ButtonType.Submit" Class="mr-2" Variant="Variant.Filled" Color="Color.Transparent" OnClick="@NavigateToOverview">Return</MudButton>
+                        <MudButton ButtonType="ButtonType.Submit" Class="ml-2" Variant="Variant.Filled" Color="Color.Primary" >Submit</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="5">
+            <MudPaper Class="pa-4 mud-height-full">
+                <MudText Typo="Typo.subtitle2">Validation Summary</MudText>
+                @if (Success)
+                {
+                    <MudText Color="Color.Success">Success</MudText>
+                }
+                else
+                {
+                    <MudText Color="@Color.Error">
+                        <ValidationSummary />
+                    </MudText>
+                }
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly to see the success message.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</EditForm>
 }
 else
 {
     <div>@Message</div>
-    <button type="button" class="btn btn-outline-primary ms-1" @onclick="@NavigateToOverview"> Back to overview</button>
+    <MudButton  Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@NavigateToOverview">Return</MudButton>
 }

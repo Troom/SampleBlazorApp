@@ -44,9 +44,6 @@ namespace ClientApp.Services
                 Encoding.UTF8, "application/json");
 
            var x = await _httpClient.PutAsync("/order/updateorder", orderJson);
-
-            await Console.Out.WriteLineAsync();
-            await Console.Out.WriteLineAsync();
         }
 
         public async Task DeleteOrder(int orderId)
